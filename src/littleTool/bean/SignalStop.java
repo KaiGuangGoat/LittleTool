@@ -46,5 +46,5 @@ public class SignalStop {
 	public Type stopType = Type.NO_STOP;
 	public int singleStop;
 	public int numericalStop;
-	
+	public boolean numericalStopStarBegin;
 }

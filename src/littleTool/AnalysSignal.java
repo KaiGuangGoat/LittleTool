@@ -145,14 +145,6 @@ public class AnalysSignal {
 						break;
 					}
 					
-//					if((sumParam>=0&&sumTemp1>=sumParam)||(sumParam<0&&sumTemp1<=sumParam)){
-//						if(startPositionI==(startParam - 1)){
-//							startPositionI ++;//条件满足后的下一个位置为开始位置
-//							resultBuilder.append("找到同时满足1、2").append("的位置："+(startPositionI+1)).append("\n");
-//							break;
-//						}
-//						
-//					}
 					startPositionI++;
 //					startPosition++;
 				}
@@ -197,6 +189,12 @@ public class AnalysSignal {
 			int positiveNum = 0;
 			int negativeNum = 0;
 			int beforeSum = sum;
+			
+			int conditionSum = 0;
+			int conditionMax = 0;
+			int conditionMaxPosition = 0;
+			int conditionMin = 0;
+			int conditionMinPosition = 0;
 //			sum = 0;
 			startPosition = startPosition + startPositionI;
 			while(true){
@@ -207,6 +205,7 @@ public class AnalysSignal {
 				int data = dataList.get(position);
 				sum = sum + data;
 				beforeSum = beforeSum + data;
+				conditionSum = conditionSum + data;
 				if(beforeSum>max){
 					max = beforeSum;
 					maxPosition = startPositionI+i+1;
@@ -214,6 +213,14 @@ public class AnalysSignal {
 				if(beforeSum<min){
 					min = beforeSum;
 					minPosition = startPositionI+i+1;
+				}
+				if(conditionSum>conditionMax){
+					conditionMax = conditionSum;
+					conditionMaxPosition = startPositionI+i+1;
+				}
+				if(conditionSum<conditionMin){
+					conditionMin = conditionSum;
+					conditionMinPosition = startPositionI+i+1;
 				}
 				if(data>0){
 					positiveNum++;
@@ -247,8 +254,20 @@ public class AnalysSignal {
 				}
 				
 				if(stop.stopType==Type.NUMERICAL_STOP){
-					if((stop.numericalStop>=0&&sum>=stop.numericalStop )
-							||(stop.numericalStop<0&&sum<=stop.numericalStop)
+					int sumTemp = sum;
+					int maxTemp = max;
+					int maxPositionTemp = maxPosition;
+					int minTemp = min;
+					int minPositionTemp = minPosition;
+					if(!stop.numericalStopStarBegin){
+						sumTemp = conditionSum;
+						maxTemp = conditionMax;
+						maxPositionTemp = conditionMaxPosition;
+						minTemp = conditionMin;
+						minPositionTemp = conditionMinPosition;
+					}
+					if((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
+							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop)
 							/*|| (goal>=0&&sum>=goal)||(goal<0&&sum<=goal)*/){
 							resultBuilder.append("============================").append("\n");
 							resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
@@ -262,10 +281,10 @@ public class AnalysSignal {
 							totalColl_positive = totalColl_positive + positiveNum;
 							totalColl_negative = totalColl_negative + negativeNum;
 							totalColl_profit = totalColl_profit + profit;
-							totalColl_maxPositive = totalColl_maxPositive + max;
-							totalColl_minNegative = totalColl_minNegative + min;
+							totalColl_maxPositive = totalColl_maxPositive + maxTemp;
+							totalColl_minNegative = totalColl_minNegative + minTemp;
 							setResultProfitStop(i+1,positiveNum, negativeNum, profit,
-									max,maxPosition,min,minPosition,
+									maxTemp,maxPositionTemp,minTemp,minPositionTemp,
 									stop.stopType);
 							break;
 					}
@@ -292,27 +311,6 @@ public class AnalysSignal {
 								Type.ALL_STOP_SINGLE_STOP);
 						break;
 					}
-					if((stop.numericalStop>=0&&sum>=stop.numericalStop )
-							||(stop.numericalStop<0&&sum<=stop.numericalStop)){
-						resultBuilder.append("============================").append("\n");
-						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
-						resultBuilder.append("=====综合止损:数值=====").append("\n");
-						resultBuilder.append("正数："+positiveNum).append("\n");
-						resultBuilder.append("负数："+negativeNum).append("\n");
-						int profit = negativeNum*negativeProfit-positiveNum*positiveProfit+(i+1);
-						resultBuilder.append("盈利："+profit).append("\n");
-						
-						totalColl_totalCount = totalColl_totalCount+i+1;
-						totalColl_positive = totalColl_positive + positiveNum;
-						totalColl_negative = totalColl_negative + negativeNum;
-						totalColl_profit = totalColl_profit + profit;
-						totalColl_maxPositive = totalColl_maxPositive + max;
-						totalColl_minNegative = totalColl_minNegative + min;
-						setResultProfitStop(i+1,positiveNum, negativeNum, profit,
-								max,maxPosition,min,minPosition,
-								Type.ALL_STOP_NUMERICAL_STOP);
-						break;
-					}
 					if(/*(goal>0&&sum>=goal)||(goal<0&&sum<=goal)*/sum==goal){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
@@ -333,6 +331,41 @@ public class AnalysSignal {
 								stop.stopType);
 						break;
 					}
+					int sumTemp = sum;
+					int maxTemp = max;
+					int maxPositionTemp = maxPosition;
+					int minTemp = min;
+					int minPositionTemp = minPosition;
+					if(!stop.numericalStopStarBegin){
+						sumTemp = conditionSum;
+						maxTemp = conditionMax;
+						maxPositionTemp = conditionMaxPosition;
+						minTemp = conditionMin;
+						minPositionTemp = conditionMinPosition;
+					}
+					if((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
+							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop)){
+						
+						resultBuilder.append("============================").append("\n");
+						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
+						resultBuilder.append("=====综合止损:数值=====").append("\n");
+						resultBuilder.append("正数："+positiveNum).append("\n");
+						resultBuilder.append("负数："+negativeNum).append("\n");
+						int profit = negativeNum*negativeProfit-positiveNum*positiveProfit+(i+1);
+						resultBuilder.append("盈利："+profit).append("\n");
+						
+						totalColl_totalCount = totalColl_totalCount+i+1;
+						totalColl_positive = totalColl_positive + positiveNum;
+						totalColl_negative = totalColl_negative + negativeNum;
+						totalColl_profit = totalColl_profit + profit;
+						totalColl_maxPositive = totalColl_maxPositive + maxTemp;
+						totalColl_minNegative = totalColl_minNegative + minTemp;
+						setResultProfitStop(i+1,positiveNum, negativeNum, profit,
+								maxTemp,maxPositionTemp,minTemp,minPositionTemp,
+								Type.ALL_STOP_NUMERICAL_STOP);
+						break;
+					}
+					
 				}
 				
 				if(/*(goal>=0&&sum>=goal)||(goal<0&&sum<=goal)*/sum==goal){

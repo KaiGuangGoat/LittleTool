@@ -183,6 +183,14 @@ public class ProfitStopUI {
 		box6.add(numerJTF);
 		final JCheckBox pstOrNgtNumer = new JCheckBox("正或负",true);
 		box6.add(pstOrNgtNumer);
+		box6.add(new JLabel("数值止损起始位置："));
+		ButtonGroup numerGroup = new ButtonGroup();
+		final JRadioButton numerOneJRB = new JRadioButton("原始位置后起始",true);
+		JRadioButton numerTwoJRB = new JRadioButton("满足条件的位置后起始");
+		numerGroup.add(numerOneJRB);
+		numerGroup.add(numerTwoJRB);
+		box6.add(numerOneJRB);
+		box6.add(numerTwoJRB);
 		
 		Box box7 = Box.createHorizontalBox();
 		box7.add(new JLabel("负数盈利变量参数："));
@@ -255,11 +263,11 @@ public class ProfitStopUI {
 					
 					if(!StringUtil.isBlank(sumIndexLessJTF.getText())){
 						sumRegion.setSecondNum(getNum(sumIndexLessJTF,  pstOrNgtSumLess.isSelected()));
-						params.append("求和达到某值数或范围,<=小于或等于：").append(sumRegion.getSecondNum()).append("\n\n");
+						params.append("求和达到某值数或范围,<=小于或等于：").append(sumRegion.getSecondNum()).append("\n");
 					}else{
 						sumRegion.setSecondNum(null);
 					}
-					
+					params.append("\n");
 					numAndSumParam.isTrue = true;
 					numAndSumParam.setSumRegion(sumRegion);
 					numAndSumParam.setNumIndexProcessSelect(numIndexProcessSelect.isSelected());
@@ -301,6 +309,13 @@ public class ProfitStopUI {
 				if(!StringUtil.isBlank(numerJTF.getText())){
 					stop.numericalStop = getNum(numerJTF, pstOrNgtNumer.isSelected());
 					params.append("数值止损量:").append(stop.numericalStop).append("\n");
+				}
+				
+				stop.numericalStopStarBegin = numerOneJRB.isSelected();
+				if(stop.numericalStopStarBegin){
+					params.append("数值止损起始位置为原始位置后开始\n");
+				}else{
+					params.append("数值止损起始位置为满足条件的位置后开始\n");
 				}
 				
 				if(!StringUtil.isBlank(negativeProfitJTF.getText())){
