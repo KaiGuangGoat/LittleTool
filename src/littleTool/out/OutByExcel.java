@@ -44,7 +44,7 @@ public class OutByExcel {
 		}
 		HSSFRow row = sheet.createRow(0);
 		for(int i=0;i<10;i++){
-			HSSFCell cell = row.createCell((short)i);
+			HSSFCell cell = row.createCell(i);
 			cell.setCellValue(COLUMN_NAMES[i]);
 		}
 		for(int i=0;i<dataList.size();i++){
@@ -53,11 +53,11 @@ public class OutByExcel {
 			HSSFRow rowData = sheet.createRow(i+1);
 			int index = 0;
 			rowData.createCell(index++).setCellValue(type ==null?"»ã×ÜÇóºÍ":type.getTypeStr(type));
-			rowData.createCell(index++).setCellValue(stop.getTotalCount()+"");
-			rowData.createCell(index++).setCellValue(stop.getPositive()+"");
-			rowData.createCell(index++).setCellValue(stop.getNegative()+"");
-			rowData.createCell(index++).setCellValue(stop.getPositive()+stop.getNegative()+"");
-			rowData.createCell(index++).setCellValue(stop.getProfit()+"");
+			rowData.createCell(index++).setCellValue(stop.getTotalCount());
+			rowData.createCell(index++).setCellValue(stop.getPositive());
+			rowData.createCell(index++).setCellValue(stop.getNegative());
+			rowData.createCell(index++).setCellValue(stop.getPositive()+stop.getNegative());
+			rowData.createCell(index++).setCellValue(stop.getProfit());
 			rowData.createCell(index++).setCellValue(stop.getMaxPositive());
 			rowData.createCell(index++).setCellValue(stop.getPositionPst());
 			rowData.createCell(index++).setCellValue(stop.getMinNegative());
