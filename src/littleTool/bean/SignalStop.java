@@ -7,9 +7,11 @@ public class SignalStop {
 		SINGLE_STOP,
 		NUMERICAL_STOP,
 		ALL_STOP,
+		FIXED_STOP,
 		ALL_STOP_NO_STOP,
 		ALL_STOP_SINGLE_STOP,
-		ALL_STOP_NUMERICAL_STOP;
+		ALL_STOP_NUMERICAL_STOP,
+		ALL_STOP_FIXED_STOP;
 		public String getTypeStr(Type type){
 			String typeStr = "";
 			switch (type) {
@@ -34,7 +36,9 @@ public class SignalStop {
 			case ALL_STOP_NUMERICAL_STOP:
 				typeStr = "×ÛºÏÖ¹Ëð£ºÊýÖµÖ¹Ëð";
 				break;
-			
+			case ALL_STOP_FIXED_STOP:
+				typeStr = "×ÛºÏÖ¹Ëð£º¹Ì¶¨Ö¹Ëð";
+				break;
 
 			default:
 				break;
@@ -46,5 +50,7 @@ public class SignalStop {
 	public Type stopType = Type.NO_STOP;
 	public int singleStop;
 	public int numericalStop;
+	public int fixedStop;
 	public boolean numericalStopStarBegin;
+	public boolean joinFixedInAllStopOrNot;
 }

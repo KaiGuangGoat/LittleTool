@@ -68,6 +68,7 @@ public class AnalysSignal {
 		int totalColl_minNegative = 0;
 		
 		for(SignalPositionMsg msg:positionMsgList){
+			int index = 0;//从原始位置开始算起
 			int sum = 0;
 			int max = 0;
 			int maxPosition = 0;
@@ -98,7 +99,7 @@ public class AnalysSignal {
 					if(numAndSumParam.isNumIndexProcessSelect()&&startPositionI < startParam -1){//如果偏移量在到达startParam位置之前，求和值大于指定的最大值或小于指定的最小值，则结束
 						int processSum =  numAndSumParam.getNumIndexProcessSum();
 						if(Math.abs(sumTemp1)>=Math.abs(processSum)){
-							startPosition = dataList.size();
+							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
 							break;
 						}
 					}
@@ -146,12 +147,13 @@ public class AnalysSignal {
 					}
 					
 					startPositionI++;
-//					startPosition++;
+					index++;
 				}
 				
 			}else{
 				if(startParam>0){
 					startPosition = msg.getEnd() + startParam - 1;
+					index = startParam;
 				}else{
 					int sumTemp = 0;
 					startPosition = msg.getEnd();
@@ -163,11 +165,11 @@ public class AnalysSignal {
 						sum = sum + data;
 						if(sum>max){
 							max = sum;
-							maxPosition = /*startPosition+*/startPositionI+1;
+							maxPosition = startPositionI+1;
 						}
 						if(sum<min){
 							min = sum;
-							minPosition = /*startPosition+*/startPositionI+1;
+							minPosition = startPositionI+1;
 						}
 						sumTemp += data;
 						if((sumParam>=0&&sumTemp>=sumParam)||(sumParam<0&&sumTemp<=sumParam)){
@@ -176,7 +178,7 @@ public class AnalysSignal {
 							break;
 						}
 						startPositionI++;
-//						startPosition++;
+						index++;
 					}
 					
 				}
@@ -195,7 +197,7 @@ public class AnalysSignal {
 			int conditionMaxPosition = 0;
 			int conditionMin = 0;
 			int conditionMinPosition = 0;
-//			sum = 0;
+			
 			startPosition = startPosition + startPositionI;
 			while(true){
 				position = startPosition + i;
@@ -290,6 +292,29 @@ public class AnalysSignal {
 					}
 				}
 				
+				if(stop.joinFixedInAllStopOrNot&&stop.stopType==Type.FIXED_STOP){
+					if(index>=stop.fixedStop ){
+						resultBuilder.append("============================").append("\n");
+						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
+						resultBuilder.append("=====固定止损=====").append("\n");
+						resultBuilder.append("正数："+positiveNum).append("\n");
+						resultBuilder.append("负数："+negativeNum).append("\n");
+						int profit = negativeNum*negativeProfit-positiveNum*positiveProfit+(i+1);
+						resultBuilder.append("盈利："+profit).append("\n");
+						
+						totalColl_totalCount = totalColl_totalCount +i+1;
+						totalColl_positive = totalColl_positive + positiveNum;
+						totalColl_negative = totalColl_negative + negativeNum;
+						totalColl_profit = totalColl_profit + profit;
+						totalColl_maxPositive = totalColl_maxPositive + max;
+						totalColl_minNegative = totalColl_minNegative + min;
+						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
+								max,maxPosition,min,minPosition,
+								stop.stopType);
+						break;
+					}
+				}
+				
 				if(stop.stopType==Type.ALL_STOP){
 					if(i>=stop.singleStop-1){
 						resultBuilder.append("============================").append("\n");
@@ -328,9 +353,31 @@ public class AnalysSignal {
 						totalColl_minNegative = totalColl_minNegative + min;
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
-								stop.stopType);
+								Type.ALL_STOP_NO_STOP);
 						break;
 					}
+					
+					if(stop.joinFixedInAllStopOrNot && index>=stop.fixedStop){
+						resultBuilder.append("============================").append("\n");
+						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
+						resultBuilder.append("=====固定止损=====").append("\n");
+						resultBuilder.append("正数："+positiveNum).append("\n");
+						resultBuilder.append("负数："+negativeNum).append("\n");
+						int profit = negativeNum*negativeProfit-positiveNum*positiveProfit+(i+1);
+						resultBuilder.append("盈利："+profit).append("\n");
+						
+						totalColl_totalCount = totalColl_totalCount +i+1;
+						totalColl_positive = totalColl_positive + positiveNum;
+						totalColl_negative = totalColl_negative + negativeNum;
+						totalColl_profit = totalColl_profit + profit;
+						totalColl_maxPositive = totalColl_maxPositive + max;
+						totalColl_minNegative = totalColl_minNegative + min;
+						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
+								max,maxPosition,min,minPosition,
+								Type.ALL_STOP_FIXED_STOP);
+						break;
+					}
+					
 					int sumTemp = sum;
 					int maxTemp = max;
 					int maxPositionTemp = maxPosition;
@@ -405,8 +452,10 @@ public class AnalysSignal {
 				}
 				
 				i++;
+				index++;
 			}
 		}
+		//总的统计
 		ResultProfitStop mResultProfitStop = new ResultProfitStop();
 		mResultProfitStop.setTotalCount(totalColl_totalCount);
 		mResultProfitStop.setPositive(totalColl_positive);

@@ -9,12 +9,19 @@ public class NumAndSumParam {
 	public boolean isTrue = false;
 	private boolean numIndexProcessSelect;
 	private int numIndexProcessSum;//中间过程出现的设定的数值，结束条件，>=|sum|或<=-|sum|
+	private boolean numIProSumEnterOrClose;
 	private SumRegion sumRegion;
 	public int getNumIndexProcessSum() {
 		return numIndexProcessSum;
 	}
 	public void setNumIndexProcessSum(int numIndexProcessSum) {
 		this.numIndexProcessSum = numIndexProcessSum;
+	}
+	public boolean isNumIProSumEnterOrClose() {
+		return numIProSumEnterOrClose;
+	}
+	public void setNumIProSumEnterOrClose(boolean numIProSumEnterOrClose) {
+		this.numIProSumEnterOrClose = numIProSumEnterOrClose;
 	}
 	public SumRegion getSumRegion() {
 		return sumRegion;

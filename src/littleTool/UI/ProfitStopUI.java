@@ -116,6 +116,14 @@ public class ProfitStopUI {
 		box3_1.add(pstOrNgtNumIndexProcessSum);
 		final JCheckBox numIndexProcessSelect = new JCheckBox("选择",true);
 		box3_1.add(numIndexProcessSelect);
+		ButtonGroup enterOrClose = new ButtonGroup();
+		final JRadioButton enterJbtn = new JRadioButton("满足则进入",true);
+		JRadioButton closeJbtn = new JRadioButton("满足则结束",false);
+		enterOrClose.add(enterJbtn);
+		enterOrClose.add(closeJbtn);
+		box3_1.add(enterJbtn);
+		box3_1.add(closeJbtn);
+		
 		
 		box3.add(box3_1);
 		box3.add(Box.createVerticalStrut(10));
@@ -163,10 +171,16 @@ public class ProfitStopUI {
 		stopButtons.add(numericalStopBtn);
 		final JRadioButton allStopBtn = new JRadioButton("综合止损");
 		stopButtons.add(allStopBtn);
+		final JRadioButton fixedStopBtn = new JRadioButton("固定止损");
+		stopButtons.add(fixedStopBtn);
+		final JCheckBox joinFixedStopBtnOrNot = new JCheckBox("是否把固定止损加入到综合止损里面",false);
+		
 		box5.add(noStopBtn);
 		box5.add(signalStopBtn);
 		box5.add(numericalStopBtn);
 		box5.add(allStopBtn);
+		box5.add(fixedStopBtn);
+		box5.add(joinFixedStopBtnOrNot);
 		
 		Box box6 = Box.createHorizontalBox();
 		box6.add(new JLabel("单量止损："));
@@ -191,6 +205,11 @@ public class ProfitStopUI {
 		numerGroup.add(numerTwoJRB);
 		box6.add(numerOneJRB);
 		box6.add(numerTwoJRB);
+		box6.add(new JLabel("    固定止损："));
+		final JTextField fixedJTF = new JTextField();
+		FileInputOutput.onlyInputNum(fixedJTF);
+		fixedJTF.setMaximumSize(new Dimension(100,100));
+		box6.add(fixedJTF);
 		
 		Box box7 = Box.createHorizontalBox();
 		box7.add(new JLabel("负数盈利变量参数："));
@@ -269,6 +288,7 @@ public class ProfitStopUI {
 					}
 					params.append("\n");
 					numAndSumParam.isTrue = true;
+					numAndSumParam.setNumIProSumEnterOrClose(enterJbtn.isSelected());
 					numAndSumParam.setSumRegion(sumRegion);
 					numAndSumParam.setNumIndexProcessSelect(numIndexProcessSelect.isSelected());
 					startParam = Integer.parseInt(numIndexJTF.getText());
@@ -298,9 +318,15 @@ public class ProfitStopUI {
 					stop.stopType = Type.NUMERICAL_STOP;
 					params.append("止损方式:").append("数值止损").append("\n");
 				}
+				
+				if(fixedStopBtn.isSelected()){
+					stop.stopType = Type.FIXED_STOP;
+					params.append("止损方式：").append("固定止损").append("\n");
+				}
 				if(allStopBtn.isSelected()){
 					stop.stopType = Type.ALL_STOP;
-					params.append("止损方式:").append("综合止损").append("\n");
+					params.append("止损方式：").append("综合止损").append("\n");
+					stop.joinFixedInAllStopOrNot = joinFixedStopBtnOrNot.isSelected();
 				}
 				if(!StringUtil.isBlank(signalJTF.getText())){
 					stop.singleStop = getNum(signalJTF, pstOrNgtSignal.isSelected());
@@ -309,6 +335,10 @@ public class ProfitStopUI {
 				if(!StringUtil.isBlank(numerJTF.getText())){
 					stop.numericalStop = getNum(numerJTF, pstOrNgtNumer.isSelected());
 					params.append("数值止损量:").append(stop.numericalStop).append("\n");
+				}
+				if(!StringUtil.isBlank(fixedJTF.getText())){
+					stop.fixedStop = getNum(fixedJTF,true);
+					params.append("固定止损:").append(stop.fixedStop).append("\n");
 				}
 				
 				stop.numericalStopStarBegin = numerOneJRB.isSelected();
