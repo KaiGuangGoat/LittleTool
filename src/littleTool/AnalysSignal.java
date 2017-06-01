@@ -95,10 +95,11 @@ public class AnalysSignal {
 						minPosition = startPositionI+1;
 					}
 					sumTemp1 += data;
-					
+					//startParam -1:到达目标位置
 					if(numAndSumParam.isNumIndexProcessSelect()&&startPositionI < startParam -1){//如果偏移量在到达startParam位置之前，求和值大于指定的最大值或小于指定的最小值，则结束
 						int processSum =  numAndSumParam.getNumIndexProcessSum();
-						if(Math.abs(sumTemp1)>=Math.abs(processSum)){
+						//Math.abs(sumTemp1)>=Math.abs(processSum)
+						if(processSum>=0&&sumTemp1>=processSum || processSum<0&&sumTemp1<=processSum){
 							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
 							break;
 						}
@@ -137,12 +138,18 @@ public class AnalysSignal {
 								break;
 							}
 						}
-						startPosition = dataList.size();
-						break;
+						
+						if(region.allNull()){
+							startPositionI = dataList.size();
+							break;
+						}
+						
+						
+						
 					}
 					
 					if(startPositionI > startParam - 1){
-						startPosition = dataList.size();
+						startPositionI = dataList.size();
 						break;
 					}
 					
