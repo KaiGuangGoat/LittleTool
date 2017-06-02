@@ -130,11 +130,10 @@ public final class DataUtil {
             }
         } else { // specified by content type header (or by user on file load)
             Validate.notEmpty(charsetName, "Must set charset arg to character set of file to parse. Set to null to attempt to detect from HTML");
-            FileInputOutput.log("docData before:capacity--"+byteData.capacity());
             try {
             	docData = Charset.forName(charsetName).decode(byteData).toString();
 			} catch (Exception e) {
-				 FileInputOutput.log("error");
+				e.printStackTrace();
 			}
            
         }

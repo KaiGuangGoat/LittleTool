@@ -484,6 +484,7 @@ public class FileInputOutput {
 			FileInputOutput fileInputOutput = new FileInputOutput();
 			fileInputOutput.dialog();
 		} catch (Exception e) {
+			e.printStackTrace();
 			log("main exception:"+ExceptionUtil.getExceptionMsg(e));
 		}
 //		fileInputOutput.analyse("C:\\Users\\Kaiguang\\Documents\\DeMAUD30.htm", "C:\\Users\\Kaiguang\\Documents\\out");

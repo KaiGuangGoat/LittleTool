@@ -240,7 +240,7 @@ public class AnalysSignal {
 				
 				if(stop.stopType==Type.SINGLE_STOP){
 					
-					if(i>=stop.singleStop-1 /*|| (goal>=0&&sum>=goal)||(goal<0&&sum<goal)*/){
+					if(stop.singleStop!=null&&i>=stop.singleStop-1 /*|| (goal>=0&&sum>=goal)||(goal<0&&sum<goal)*/){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====单量止损=====").append("\n");
@@ -275,8 +275,8 @@ public class AnalysSignal {
 						minTemp = conditionMin;
 						minPositionTemp = conditionMinPosition;
 					}
-					if((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
-							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop)
+					if(stop.numericalStop!=null&&((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
+							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop))
 							/*|| (goal>=0&&sum>=goal)||(goal<0&&sum<=goal)*/){
 							resultBuilder.append("============================").append("\n");
 							resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
@@ -300,7 +300,7 @@ public class AnalysSignal {
 				}
 				
 				if(stop.joinFixedInAllStopOrNot&&stop.stopType==Type.FIXED_STOP){
-					if(index>=stop.fixedStop ){
+					if(stop.fixedStop!=null&&index>=stop.fixedStop ){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====固定止损=====").append("\n");
@@ -323,7 +323,7 @@ public class AnalysSignal {
 				}
 				
 				if(stop.stopType==Type.ALL_STOP){
-					if(i>=stop.singleStop-1){
+					if(stop.singleStop!=null&&i>=stop.singleStop-1){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====综合止损:单量=====").append("\n");
@@ -364,7 +364,7 @@ public class AnalysSignal {
 						break;
 					}
 					
-					if(stop.joinFixedInAllStopOrNot && index>=stop.fixedStop){
+					if(stop.joinFixedInAllStopOrNot && stop.fixedStop!=null && index>=stop.fixedStop){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====固定止损=====").append("\n");
@@ -397,8 +397,8 @@ public class AnalysSignal {
 						minTemp = conditionMin;
 						minPositionTemp = conditionMinPosition;
 					}
-					if((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
-							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop)){
+					if(stop.numericalStop!=null&&((stop.numericalStop>=0&&sumTemp>=stop.numericalStop )
+							||(stop.numericalStop<0&&sumTemp<=stop.numericalStop))){
 						
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
@@ -444,17 +444,20 @@ public class AnalysSignal {
 					totalColl_maxPositive = totalColl_maxPositive + max;
 					totalColl_minNegative = totalColl_minNegative + min;
 					
-					ResultProfitStop mResultProfitStop = new ResultProfitStop();
-					mResultProfitStop.setTotalCount(i+1);
-					mResultProfitStop.setPositive(positiveNum);
-					mResultProfitStop.setNegative(negativeNum);
-					mResultProfitStop.setProfit(profit);
-					mResultProfitStop.setMaxPositive(max);
-					mResultProfitStop.setPositionPst(maxPosition);
-					mResultProfitStop.setMinNegative(min);
-					mResultProfitStop.setPositionNgt(minPosition);
-					mResultProfitStop.setStopType(Type.NO_STOP);
-					outputDataList.add(mResultProfitStop);
+//					ResultProfitStop mResultProfitStop = new ResultProfitStop();
+//					mResultProfitStop.setTotalCount(i+1);
+//					mResultProfitStop.setPositive(positiveNum);
+//					mResultProfitStop.setNegative(negativeNum);
+//					mResultProfitStop.setProfit(profit);
+//					mResultProfitStop.setMaxPositive(max);
+//					mResultProfitStop.setPositionPst(maxPosition);
+//					mResultProfitStop.setMinNegative(min);
+//					mResultProfitStop.setPositionNgt(minPosition);
+//					mResultProfitStop.setStopType(Type.NO_STOP);
+//					outputDataList.add(mResultProfitStop);
+					setResultProfitStop(i+1, positiveNum, negativeNum, profit, 
+							conditionMax, conditionMaxPosition, conditionMin, 
+							conditionMinPosition, Type.NO_STOP);
 					break;
 				}
 				

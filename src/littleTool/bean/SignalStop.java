@@ -48,9 +48,9 @@ public class SignalStop {
 	}
 	
 	public Type stopType = Type.NO_STOP;
-	public int singleStop;
-	public int numericalStop;
-	public int fixedStop;
+	public Integer singleStop;
+	public Integer numericalStop;
+	public Integer fixedStop;
 	public boolean numericalStopStarBegin;
 	public boolean joinFixedInAllStopOrNot;
 }

@@ -328,17 +328,26 @@ public class ProfitStopUI {
 					params.append("止损方式：").append("综合止损").append("\n");
 					stop.joinFixedInAllStopOrNot = joinFixedStopBtnOrNot.isSelected();
 				}
+				
 				if(!StringUtil.isBlank(signalJTF.getText())){
 					stop.singleStop = getNum(signalJTF, pstOrNgtSignal.isSelected());
 					params.append("单量止损量:").append(stop.singleStop).append("\n");
+				}else{
+					stop.singleStop = null;
 				}
+				
 				if(!StringUtil.isBlank(numerJTF.getText())){
 					stop.numericalStop = getNum(numerJTF, pstOrNgtNumer.isSelected());
 					params.append("数值止损量:").append(stop.numericalStop).append("\n");
+				}else{
+					stop.numericalStop = null;
 				}
+				
 				if(!StringUtil.isBlank(fixedJTF.getText())){
 					stop.fixedStop = getNum(fixedJTF,true);
 					params.append("固定止损:").append(stop.fixedStop).append("\n");
+				}else{
+					stop.fixedStop = null;
 				}
 				
 				stop.numericalStopStarBegin = numerOneJRB.isSelected();
