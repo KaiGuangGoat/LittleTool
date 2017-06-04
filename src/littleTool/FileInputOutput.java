@@ -29,6 +29,7 @@ import littleTool.UI.DataTableModel;
 import littleTool.UI.ProfitStopUI;
 import littleTool.bean.NumAndSumParam;
 import littleTool.bean.ResultProfitStop;
+import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop;
 import littleTool.out.OutByExcel;
 import littleTool.utils.ExceptionUtil;
@@ -56,6 +57,7 @@ public class FileInputOutput {
 	private ProfitStopUI profitStopUI;
 	
 	private List<ResultProfitStop> resultProStopList;
+	private List<SignalPositionUnEntrance> unEntranceList;
 	
 	private JTable table;
 	
@@ -80,7 +82,7 @@ public class FileInputOutput {
 				failMsg = "输入文件不存在";
 				return false;
 			}
-			Document document = Jsoup.parse(file, "UTF-8");log("85:after jsoup parse");
+			Document document = Jsoup.parse(file, "UTF-8");
 			Elements elements = document.getElementsByClass("mspt");
 			if (elements != null) {
 				if (elements.isEmpty()) {
@@ -95,7 +97,8 @@ public class FileInputOutput {
 				return false;
 			}
 		} catch (Exception e) {
-//			e.printStackTrace();
+			e.printStackTrace();
+			log("analyse:"+ExceptionUtil.getExceptionMsg(e));
 			failMsg = "请检查输入的文件和输出的文件是否正确！";
 		}
 		return false;
@@ -113,7 +116,8 @@ public class FileInputOutput {
 		String currentTime;
 		Date date = new Date(System.currentTimeMillis());
 		currentTime = date.toLocaleString().replace(":", "_");
-		outByExcel(outputPath+File.separatorChar+outFileName+currentTime+".xls");
+		outByExcel(outputPath+File.separatorChar+outFileName+currentTime);
+		
 		boolean txtResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".txt",textResult.toString());
 		boolean htmResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".htm", htmResult.toString());
 		return txtResultBool|htmResultBool;
@@ -121,10 +125,11 @@ public class FileInputOutput {
 	
 	private void outByExcel(String outName){
 		OutByExcel excel = new OutByExcel();
-		excel.out(resultProStopList, outName);;
+		excel.out(resultProStopList, outName+".xls");
+		excel.outUnEntrance(unEntranceList, outName+"_未入场和未达到止损的.xls");
 	}
 
-	public static boolean fileOutput(String filePath,String content) {
+	private static boolean fileOutput(String filePath,String content) {
 		if (content == null){
 			return false;
 		}
@@ -425,6 +430,7 @@ public class FileInputOutput {
 			outMsg.setText(profitStopUI.getParams()+"\n"+findResult+"\n"+analyResult);
 //			ProfitStopDataTable.showTable(analysSignal.getOutputDataList());
 			resultProStopList = analysSignal.getOutputDataList();
+			unEntranceList = analysSignal.getUnEntrancdList();
 			table.setModel(new DataTableModel(resultProStopList));
 			win.repaint();
 //			fileOutput("H:\\项目\\国栋师兄\\test.htm", htmResult.toString());
@@ -475,7 +481,7 @@ public class FileInputOutput {
 		});  
 	}
 	
-	public static void log(String msg){
+	private static void log(String msg){
 		fileOutput("D:\\log.txt",msg);
 	}
 

@@ -11,9 +11,11 @@ import java.util.List;
 import littleTool.bean.ResultByStop;
 import littleTool.bean.ResultNoStop;
 import littleTool.bean.ResultProfitStop;
+import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop.Type;
 import littleTool.utils.ExceptionUtil;
 
+import org.apache.poi.hssf.model.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -28,13 +30,23 @@ public class OutByExcel {
 		"数值止损",	"正数",	"负数",	"盈利",	
 		"综合止损",	"正数",	"负数",	"盈利" */};
 	
+	private static final String[] COLUMN_NAMES_UN = {
+		"未满足类型","信号量的位置","信号量开始算起的正数个数","信号量开始算起的负数个数","求和","入场信号量开始算起的正数个数","入场信号量开始算起的负数个数","求和"
+	};
+	
 	private HSSFWorkbook workBook ;
 	private HSSFSheet sheet ;
+	
+	private HSSFWorkbook workBook2;
+	private HSSFSheet sheet2;
 	
 	
 	public OutByExcel(){
 		workBook = new HSSFWorkbook();
 		sheet = workBook.createSheet();
+		
+		workBook2 = new HSSFWorkbook();
+		sheet2 = workBook2.createSheet();
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -63,10 +75,36 @@ public class OutByExcel {
 			rowData.createCell(index++).setCellValue(stop.getMinNegative());
 			rowData.createCell(index++).setCellValue(stop.getPositionNgt());
 		}
-		write(outName);
+		write(outName,workBook);
 	}
 	
-	private String write(String fileName){
+	public void outUnEntrance(List<SignalPositionUnEntrance> dataList,String outName){
+		if(dataList==null||dataList.size()==0){
+			return;
+		}
+		HSSFRow row = sheet2.createRow(0);
+		for(int i=0;i<COLUMN_NAMES_UN.length;i++){
+			HSSFCell cell = row.createCell(i);
+			cell.setCellValue(COLUMN_NAMES_UN[i]);
+		}
+		for(int i=0;i<dataList.size();i++){
+			SignalPositionUnEntrance unEntrance = dataList.get(i);
+			
+			HSSFRow rowData = sheet2.createRow(i+1);
+			int index = 0;
+			rowData.createCell(index++).setCellValue(unEntrance.TYPE);
+			rowData.createCell(index++).setCellValue(unEntrance.getSignalPositionMsg().getEnd());
+			rowData.createCell(index++).setCellValue(unEntrance.getPositiveCount());
+			rowData.createCell(index++).setCellValue(unEntrance.getNegativeCount());
+			rowData.createCell(index++).setCellValue(unEntrance.getSumAfterUnEntrance());
+			rowData.createCell(index++).setCellValue(unEntrance.getPositiveCountProfitStop());
+			rowData.createCell(index++).setCellValue(unEntrance.getNegativeCountProfitStop());
+			rowData.createCell(index++).setCellValue(unEntrance.getSumAfterUnProfitStop());
+		}
+		write(outName,workBook2);
+	}
+	
+	private String write(String fileName,HSSFWorkbook workBook){
 		try {
 			FileOutputStream fos = new FileOutputStream(fileName);
 			workBook.write(fos);

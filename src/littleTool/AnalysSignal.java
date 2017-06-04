@@ -11,6 +11,7 @@ import littleTool.bean.ResultNoStop;
 import littleTool.bean.ResultProfitStop;
 import littleTool.bean.Signal;
 import littleTool.bean.SignalPositionMsg;
+import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop;
 import littleTool.bean.SumRegion;
 import littleTool.bean.SignalStop.Type;
@@ -21,6 +22,8 @@ public class AnalysSignal {
 	private String textData;
 	private List<SignalPositionMsg> positionMsgList;
 	private List<ResultProfitStop> outputDataList;
+	private List<SignalPositionUnEntrance> unEntrancdList;
+//	private List<SignalPositionUnEntrance> unProfitStopList;
 	
 	
 	public AnalysSignal(List<Integer> dataList,String textData){
@@ -28,6 +31,8 @@ public class AnalysSignal {
 		this.textData = textData;
 		positionMsgList = new ArrayList<SignalPositionMsg>();
 		outputDataList = new ArrayList<ResultProfitStop>();
+		unEntrancdList = new ArrayList<SignalPositionUnEntrance>();
+//		unProfitStopList = new ArrayList<SignalPositionUnEntrance>();
 	}
 	
 	public String find(){
@@ -77,14 +82,24 @@ public class AnalysSignal {
 			
 			int startPosition = 0;
 			int startPositionI = 0;
+			
+			int positiveCountUn = 0;
+			int negativeCountUn = 0;
 			if(numAndSumParam.isTrue){
 				int sumTemp1 = 0;
 				startPosition = msg.getEnd();
 				while(true){
 					if(startPosition+startPositionI>=dataList.size()){
+						setUnEntranceList(msg, positiveCountUn, negativeCountUn);
 						break;
 					}
 					int data = dataList.get(startPosition+startPositionI);
+					if(data>0){
+						positiveCountUn++;
+					}
+					if(data<0){
+						negativeCountUn++;
+					}
 					sum = sum + data;
 					if(sum>max){
 						max = sum;
@@ -139,19 +154,19 @@ public class AnalysSignal {
 							}
 						}
 						
-						if(region.allNull()){
-							startPositionI = dataList.size();
-							break;
-						}
+//						if(region.allNull()){
+//							startPositionI = dataList.size();
+//							break;
+//						}
 						
 						
 						
 					}
 					
-					if(startPositionI > startParam - 1){
-						startPositionI = dataList.size();
-						break;
-					}
+//					if(startPositionI > startParam - 1){
+//						startPositionI = dataList.size();
+//						break;
+//					}
 					
 					startPositionI++;
 					index++;
@@ -161,14 +176,34 @@ public class AnalysSignal {
 				if(startParam>0){
 					startPosition = msg.getEnd() + startParam - 1;
 					index = startParam;
+					if(startPosition>=dataList.size()){
+						int startPositionTemp = msg.getEnd();
+						while(true){
+							if(startPositionTemp>=dataList.size()){
+								setUnEntranceList(msg, positiveCountUn, negativeCountUn);
+								break;
+							}
+							int data = dataList.get(startPositionTemp);
+							if(data>0) positiveCountUn++;
+							if(data<0) negativeCountUn++;
+							startPositionTemp++;
+						}
+					}
 				}else{
 					int sumTemp = 0;
 					startPosition = msg.getEnd();
 					while(true){
 						if(startPosition+startPositionI>=dataList.size()){
+							setUnEntranceList(msg, positiveCountUn, negativeCountUn);
 							break;
 						}
 						int data = dataList.get(startPosition+startPositionI);
+						if(data>0){
+							positiveCountUn++;
+						}
+						if(data<0){
+							negativeCountUn++;
+						}
 						sum = sum + data;
 						if(sum>max){
 							max = sum;
@@ -209,6 +244,7 @@ public class AnalysSignal {
 			while(true){
 				position = startPosition + i;
 				if(position>=dataList.size()){
+					setUnProfitStopList(msg, positiveNum, negativeNum*-1, positiveCountUn, negativeCountUn);
 					break;
 				}
 				int data = dataList.get(position);
@@ -233,9 +269,11 @@ public class AnalysSignal {
 				}
 				if(data>0){
 					positiveNum++;
+					positiveCountUn++;
 				}
 				if(data<0){
 					negativeNum--;
+					negativeCountUn++;
 				}
 				
 				if(stop.stopType==Type.SINGLE_STOP){
@@ -477,8 +515,24 @@ public class AnalysSignal {
 		return resultBuilder.toString();
 	}
 	
-	public List<ResultProfitStop> getOutputDataList(){
-		return outputDataList;
+	private void setUnEntranceList(SignalPositionMsg msg,int positiveCountUn,int negativeCountUn){
+		SignalPositionUnEntrance unEntrance = new SignalPositionUnEntrance();
+		unEntrance.TYPE = SignalPositionUnEntrance.TYPE_SIGNAL_UN_ENTRANCE;
+		unEntrance.setSignalPositionMsg(msg);
+		unEntrance.setPositiveCount(positiveCountUn);
+		unEntrance.setNegativeCount(negativeCountUn);
+		unEntrancdList.add(unEntrance);
+	}
+	
+	private void setUnProfitStopList(SignalPositionMsg msg,int positiveCountUn,int negativeCountUn,int positiveCountProfitStop,int negativeCountProfitStop){
+		SignalPositionUnEntrance unEntrance = new SignalPositionUnEntrance();
+		unEntrance.TYPE = SignalPositionUnEntrance.TYPE_SIGNAL_UN_PROFITSTOP;
+		unEntrance.setSignalPositionMsg(msg);
+		unEntrance.setPositiveCount(positiveCountUn);
+		unEntrance.setNegativeCount(negativeCountUn);
+		unEntrance.setPositiveCountProfitStop(positiveCountProfitStop);
+		unEntrance.setNegativeCountProfitStop(negativeCountProfitStop);
+		unEntrancdList.add(unEntrance);
 	}
 	
 	private void setResultProfitStop(int totalCount,int positiveNum,int negativeNum,int profit,
@@ -496,5 +550,17 @@ public class AnalysSignal {
 		mResultProfitStop.setStopType(type);
 		outputDataList.add(mResultProfitStop);
 	}
+	
+	public List<ResultProfitStop> getOutputDataList(){
+		return outputDataList;
+	}
+	
+	public List<SignalPositionUnEntrance> getUnEntrancdList() {
+		return unEntrancdList;
+	}
+
+//	public List<SignalPositionUnEntrance> getUnProfitStopList() {
+//		return unProfitStopList;
+//	}
 	
 }
