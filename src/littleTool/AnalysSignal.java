@@ -85,12 +85,14 @@ public class AnalysSignal {
 			
 			int positiveCountUn = 0;
 			int negativeCountUn = 0;
+			boolean flag = false;
 			if(numAndSumParam.isTrue){
 				int sumTemp1 = 0;
 				startPosition = msg.getEnd();
 				while(true){
 					if(startPosition+startPositionI>=dataList.size()){
 						setUnEntranceList(msg, positiveCountUn, negativeCountUn);
+						flag = true;
 						break;
 					}
 					int data = dataList.get(startPosition+startPositionI);
@@ -116,6 +118,24 @@ public class AnalysSignal {
 						//Math.abs(sumTemp1)>=Math.abs(processSum)
 						if(processSum>=0&&sumTemp1>=processSum || processSum<0&&sumTemp1<=processSum){
 							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
+							if(numAndSumParam.isNumIProSumEnterOrClose()){
+								startPositionI++;
+							}else{
+								startPositionI = dataList.size();
+								int startPositionTemp = msg.getEnd();
+								positiveCountUn = negativeCountUn = 0;
+								while(true){
+									if(startPositionTemp>=dataList.size()){
+										setUnEntranceList(msg, positiveCountUn, negativeCountUn);
+										flag = true;
+										break;
+									}
+									int dataTemp = dataList.get(startPositionTemp);
+									if(dataTemp>0) positiveCountUn++;
+									if(dataTemp<0) negativeCountUn++;
+									startPositionTemp++;
+								}	
+							}
 							break;
 						}
 					}
@@ -181,6 +201,7 @@ public class AnalysSignal {
 						while(true){
 							if(startPositionTemp>=dataList.size()){
 								setUnEntranceList(msg, positiveCountUn, negativeCountUn);
+								flag = true;
 								break;
 							}
 							int data = dataList.get(startPositionTemp);
@@ -195,6 +216,7 @@ public class AnalysSignal {
 					while(true){
 						if(startPosition+startPositionI>=dataList.size()){
 							setUnEntranceList(msg, positiveCountUn, negativeCountUn);
+							flag = true;
 							break;
 						}
 						int data = dataList.get(startPosition+startPositionI);
@@ -244,7 +266,8 @@ public class AnalysSignal {
 			while(true){
 				position = startPosition + i;
 				if(position>=dataList.size()){
-					setUnProfitStopList(msg, positiveNum, negativeNum*-1, positiveCountUn, negativeCountUn);
+					if(flag == false)
+						setUnProfitStopList(msg,positiveCountUn, negativeCountUn, positiveNum, negativeNum*-1);
 					break;
 				}
 				int data = dataList.get(position);
