@@ -196,20 +196,20 @@ public class AnalysSignal {
 				if(startParam>0){
 					startPosition = msg.getEnd() + startParam - 1;
 					index = startParam;
-					if(startPosition>=dataList.size()){
-						int startPositionTemp = msg.getEnd();
-						while(true){
-							if(startPositionTemp>=dataList.size()){
+					int startPositionTemp = msg.getEnd();
+					while(true){
+						if(startPositionTemp>=dataList.size()){
+							if(startPosition>=dataList.size()){
 								setUnEntranceList(msg, positiveCountUn, negativeCountUn);
 								flag = true;
-								break;
 							}
-							int data = dataList.get(startPositionTemp);
-							if(data>0) positiveCountUn++;
-							if(data<0) negativeCountUn++;
-							startPositionTemp++;
+							break;
 						}
-					}
+						int data = dataList.get(startPositionTemp);
+						if(data>0) positiveCountUn++;
+						if(data<0) negativeCountUn++;
+						startPositionTemp++;
+					}	
 				}else{
 					int sumTemp = 0;
 					startPosition = msg.getEnd();
@@ -292,11 +292,9 @@ public class AnalysSignal {
 				}
 				if(data>0){
 					positiveNum++;
-					positiveCountUn++;
 				}
 				if(data<0){
 					negativeNum--;
-					negativeCountUn++;
 				}
 				
 				if(stop.stopType==Type.SINGLE_STOP){
