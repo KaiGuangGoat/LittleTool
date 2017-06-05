@@ -117,7 +117,7 @@ public class AnalysSignal {
 						int processSum =  numAndSumParam.getNumIndexProcessSum();
 						//Math.abs(sumTemp1)>=Math.abs(processSum)
 						if(processSum>=0&&sumTemp1>=processSum || processSum<0&&sumTemp1<=processSum){
-							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
+//							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
 							if(numAndSumParam.isNumIProSumEnterOrClose()){
 								startPositionI++;
 							}else{
