@@ -73,7 +73,7 @@ public class AnalysSignal {
 		int totalColl_minNegative = 0;
 		
 		for(SignalPositionMsg msg:positionMsgList){
-			int index = 0;//从原始位置开始算起
+			int index = 1;//从原始位置开始算起，处理固定止损用的
 			int sum = 0;
 			int max = 0;
 			int maxPosition = 0;
@@ -119,7 +119,9 @@ public class AnalysSignal {
 						if(processSum>=0&&sumTemp1>=processSum || processSum<0&&sumTemp1<=processSum){
 //							startPositionI = numAndSumParam.isNumIProSumEnterOrClose()?(startPositionI+1):dataList.size();
 							if(numAndSumParam.isNumIProSumEnterOrClose()){
-								startPositionI++;
+								startPositionI ++;
+								index++;
+								resultBuilder.append("入场信号的位置："+startPositionI).append("\n");
 							}else{
 								startPositionI = dataList.size();
 								int startPositionTemp = msg.getEnd();
@@ -146,6 +148,7 @@ public class AnalysSignal {
 							if(sumTemp1 == region.getFirstNum()){
 								resultBuilder.append("找到同时满足==").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								index++;
 								break;
 							}
 						}
@@ -154,6 +157,7 @@ public class AnalysSignal {
 							if(sumTemp1>=region.getFirstNum()){
 								resultBuilder.append("找到同时满足>=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								index++;
 								break;
 							}
 						}
@@ -162,6 +166,7 @@ public class AnalysSignal {
 							if(sumTemp1<=region.getSecondNum()){
 								resultBuilder.append("找到同时满足<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								index++;
 								break;
 							}
 						}
@@ -170,6 +175,7 @@ public class AnalysSignal {
 							if(sumTemp1>=region.getFirstNum()&&sumTemp1<=region.getSecondNum()){
 								resultBuilder.append("找到同时满足>=并且<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								index++;
 								break;
 							}
 						}
@@ -299,7 +305,7 @@ public class AnalysSignal {
 				
 				if(stop.stopType==Type.SINGLE_STOP){
 					
-					if(stop.singleStop!=null&&i>=stop.singleStop-1 /*|| (goal>=0&&sum>=goal)||(goal<0&&sum<goal)*/){
+					if(stop.singleStop!=null&&i>=stop.singleStop-1 && sum!=goal/*|| (goal>=0&&sum>=goal)||(goal<0&&sum<goal)*/){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====单量止损=====").append("\n");
@@ -359,7 +365,7 @@ public class AnalysSignal {
 				}
 				
 				if(stop.joinFixedInAllStopOrNot&&stop.stopType==Type.FIXED_STOP){
-					if(stop.fixedStop!=null&&index>=stop.fixedStop ){
+					if(stop.fixedStop!=null&&index==stop.fixedStop &&sum!=goal){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====固定止损=====").append("\n");
@@ -382,7 +388,8 @@ public class AnalysSignal {
 				}
 				
 				if(stop.stopType==Type.ALL_STOP){
-					if(stop.singleStop!=null&&i>=stop.singleStop-1){
+					
+					if(stop.singleStop!=null&&i==stop.singleStop-1&&sum!=goal){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====综合止损:单量=====").append("\n");
@@ -423,7 +430,7 @@ public class AnalysSignal {
 						break;
 					}
 					
-					if(stop.joinFixedInAllStopOrNot && stop.fixedStop!=null && index>=stop.fixedStop){
+					if(stop.joinFixedInAllStopOrNot && stop.fixedStop!=null && index==stop.fixedStop){
 						resultBuilder.append("============================").append("\n");
 						resultBuilder.append("第  "+msg.getPosition()+" 个信号量：").append("\n");
 						resultBuilder.append("=====固定止损=====").append("\n");
