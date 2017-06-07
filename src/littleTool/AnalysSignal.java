@@ -121,6 +121,24 @@ public class AnalysSignal {
 							if(numAndSumParam.isNumIProSumEnterOrClose()){
 								startPositionI ++;
 								index++;
+								if(startPosition+startPositionI<dataList.size()){
+									int dataPlus = dataList.get(startPosition+startPositionI);
+									if(dataPlus>0){
+										positiveCountUn++;
+									}
+									if(dataPlus<0){
+										negativeCountUn++;
+									}
+									sum = sum + dataPlus;
+									if(sum>max){
+										max = sum;
+										maxPosition = startPositionI+1;
+									}
+									if(sum<min){
+										min = sum;
+										minPosition = startPositionI+1;
+									}
+								}
 								resultBuilder.append("入场信号的位置："+startPositionI).append("\n");
 							}else{
 								startPositionI = dataList.size();
@@ -146,36 +164,108 @@ public class AnalysSignal {
 						SumRegion region = numAndSumParam.getSumRegion();
 						if(region.firstEqualSecond()){
 							if(sumTemp1 == region.getFirstNum()){
-								resultBuilder.append("找到同时满足==").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								resultBuilder.append("找到同时满足==").append("的位置："+(startPosition+startPositionI)).append("\n");
 								index++;
+								if(startPosition+startPositionI<dataList.size()){
+									int dataPlus = dataList.get(startPosition+startPositionI);
+									if(dataPlus>0){
+										positiveCountUn++;
+									}
+									if(dataPlus<0){
+										negativeCountUn++;
+									}
+									sum = sum + dataPlus;
+									if(sum>max){
+										max = sum;
+										maxPosition = startPositionI+1;
+									}
+									if(sum<min){
+										min = sum;
+										minPosition = startPositionI+1;
+									}
+								}
 								break;
 							}
 						}
 						
 						if(region.onlyFirstNotNull()){
 							if(sumTemp1>=region.getFirstNum()){
-								resultBuilder.append("找到同时满足>=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								resultBuilder.append("找到同时满足>=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								index++;
+								if(startPosition+startPositionI<dataList.size()){
+									int dataPlus = dataList.get(startPosition+startPositionI);
+									if(dataPlus>0){
+										positiveCountUn++;
+									}
+									if(dataPlus<0){
+										negativeCountUn++;
+									}
+									sum = sum + dataPlus;
+									if(sum>max){
+										max = sum;
+										maxPosition = startPositionI+1;
+									}
+									if(sum<min){
+										min = sum;
+										minPosition = startPositionI+1;
+									}
+								}
 								break;
 							}
 						}
 						
 						if(region.onlySecondNotNull()){
 							if(sumTemp1<=region.getSecondNum()){
-								resultBuilder.append("找到同时满足<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								resultBuilder.append("找到同时满足<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								index++;
+								if(startPosition+startPositionI<dataList.size()){
+									int dataPlus = dataList.get(startPosition+startPositionI);
+									if(dataPlus>0){
+										positiveCountUn++;
+									}
+									if(dataPlus<0){
+										negativeCountUn++;
+									}
+									sum = sum + dataPlus;
+									if(sum>max){
+										max = sum;
+										maxPosition = startPositionI+1;
+									}
+									if(sum<min){
+										min = sum;
+										minPosition = startPositionI+1;
+									}
+								}
 								break;
 							}
 						}
 						
 						if(region.allNotNull()){
 							if(sumTemp1>=region.getFirstNum()&&sumTemp1<=region.getSecondNum()){
-								resultBuilder.append("找到同时满足>=并且<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								startPositionI ++;//条件满足后的下一个位置为开始位置
+								resultBuilder.append("找到同时满足>=并且<=").append("的位置："+(startPosition+startPositionI)).append("\n");
 								index++;
+								if(startPosition+startPositionI<dataList.size()){
+									int dataPlus = dataList.get(startPosition+startPositionI);
+									if(dataPlus>0){
+										positiveCountUn++;
+									}
+									if(dataPlus<0){
+										negativeCountUn++;
+									}
+									sum = sum + dataPlus;
+									if(sum>max){
+										max = sum;
+										maxPosition = startPositionI+1;
+									}
+									if(sum<min){
+										min = sum;
+										minPosition = startPositionI+1;
+									}
+								}
 								break;
 							}
 						}
@@ -245,6 +335,24 @@ public class AnalysSignal {
 						if((sumParam>=0&&sumTemp>=sumParam)||(sumParam<0&&sumTemp<=sumParam)){
 							resultBuilder.append("找到求和达到").append(sumParam).append("的位置："+(startPositionI+1)).append("\n");
 							startPositionI++;
+							if(startPosition+startPositionI<dataList.size()){
+								int dataPlus = dataList.get(startPosition+startPositionI);
+								if(dataPlus>0){
+									positiveCountUn++;
+								}
+								if(dataPlus<0){
+									negativeCountUn++;
+								}
+								sum = sum + dataPlus;
+								if(sum>max){
+									max = sum;
+									maxPosition = startPositionI+1;
+								}
+								if(sum<min){
+									min = sum;
+									minPosition = startPositionI+1;
+								}
+							}
 							break;
 						}
 						startPositionI++;
