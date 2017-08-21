@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jsoup.helper.DataUtil;
+
 import littleTool.bean.NumAndSumParam;
 import littleTool.bean.ResultByStop;
 import littleTool.bean.ResultNoStop;
+import littleTool.bean.ResultProfitByYearMonth;
 import littleTool.bean.ResultProfitStop;
 import littleTool.bean.Signal;
 import littleTool.bean.SignalPositionMsg;
@@ -15,13 +18,18 @@ import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop;
 import littleTool.bean.SumRegion;
 import littleTool.bean.SignalStop.Type;
+import littleTool.tool.AnalyseProfitByDate;
+import littleTool.tool.ProfitByYearMonthHolder;
+import littleTool.utils.DateUtil;
 
 public class AnalysSignal {
 	
 	private List<Integer> dataList;
+	private List<String> timeList;
 	private String textData;
 	private List<SignalPositionMsg> positionMsgList;
 	private List<ResultProfitStop> outputDataList;
+	private List<ResultProfitByYearMonth> outputProfitByYearMonths;
 	private List<SignalPositionUnEntrance> unEntrancdList;
 //	private List<SignalPositionUnEntrance> unProfitStopList;
 	
@@ -31,8 +39,13 @@ public class AnalysSignal {
 		this.textData = textData;
 		positionMsgList = new ArrayList<SignalPositionMsg>();
 		outputDataList = new ArrayList<ResultProfitStop>();
+		outputProfitByYearMonths = new ArrayList<ResultProfitByYearMonth>();
 		unEntrancdList = new ArrayList<SignalPositionUnEntrance>();
 //		unProfitStopList = new ArrayList<SignalPositionUnEntrance>();
+	}
+	
+	public void setTimeList(List<String> timeList){
+		this.timeList = timeList;
 	}
 	
 	public String find(){
@@ -377,6 +390,8 @@ public class AnalysSignal {
 			int conditionMinPosition = 0;
 			
 			startPosition = startPosition + startPositionI;
+			
+			AnalyseProfitByDate profitByDate = new AnalyseProfitByDate(positiveProfit, negativeProfit);
 			while(true){
 				position = startPosition + i;
 				if(position>=dataList.size()){
@@ -385,6 +400,7 @@ public class AnalysSignal {
 					break;
 				}
 				int data = dataList.get(position);
+				timeList.get(position);
 				sum = sum + data;
 				beforeSum = beforeSum + data;
 				conditionSum = conditionSum + data;
@@ -431,6 +447,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								stop.stopType);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 				}
@@ -468,6 +485,7 @@ public class AnalysSignal {
 							setResultProfitStop(i+1,positiveNum, negativeNum, profit,
 									maxTemp,maxPositionTemp,minTemp,minPositionTemp,
 									stop.stopType);
+							profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 							break;
 					}
 				}
@@ -491,6 +509,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								stop.stopType);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 				}
@@ -515,6 +534,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1, positiveNum, negativeNum, profit,
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_SINGLE_STOP);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 					if(/*(goal>0&&sum>=goal)||(goal<0&&sum<=goal)*/sum==goal){
@@ -535,6 +555,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_NO_STOP);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 					
@@ -556,6 +577,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_FIXED_STOP);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 					
@@ -591,6 +613,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit,
 								maxTemp,maxPositionTemp,minTemp,minPositionTemp,
 								Type.ALL_STOP_NUMERICAL_STOP);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 						break;
 					}
 					
@@ -632,13 +655,15 @@ public class AnalysSignal {
 					setResultProfitStop(i+1, positiveNum, negativeNum, profit, 
 							conditionMax, conditionMaxPosition, conditionMin, 
 							conditionMinPosition, Type.NO_STOP);
+					profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
 					break;
 				}
-				
+				profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, false);
 				i++;
 				index++;
 			}
 		}
+		ProfitByYearMonthHolder.INSTANCE.print();
 		//总的统计
 		ResultProfitStop mResultProfitStop = new ResultProfitStop();
 		mResultProfitStop.setTotalCount(totalColl_totalCount);

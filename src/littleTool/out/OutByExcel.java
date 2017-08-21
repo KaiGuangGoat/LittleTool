@@ -3,19 +3,13 @@ package littleTool.out;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.List;
 
-import littleTool.bean.ResultByStop;
-import littleTool.bean.ResultNoStop;
 import littleTool.bean.ResultProfitStop;
 import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop.Type;
 import littleTool.utils.ExceptionUtil;
 
-import org.apache.poi.hssf.model.Workbook;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;

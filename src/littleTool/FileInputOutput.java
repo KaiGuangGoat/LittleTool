@@ -367,9 +367,13 @@ public class FileInputOutput {
 			int rightCount = 0;
 			int wrongCount = 0;
 			List<Integer> dataList = new ArrayList<Integer>();
+			List<String> timeList = new ArrayList<String>();
 			
 			for(Element tr:trs){
-				
+				if(i==0){
+					i++;
+					continue;
+				}
 				String buff = tr.child(8).text();
 				String time = tr.child(1).text();
 				try {
@@ -401,16 +405,21 @@ public class FileInputOutput {
 					}
 				} catch (Exception e) {
 					failMsg = ExceptionUtil.getExceptionMsg(e);
+					System.out.println(time);
+					timeList.add(time);
 				}
 			}
 //			Element valueElement = trs.get(2).child(8);
 //			System.out.println(valueElement.text());
+			System.out.println("dataList len:"+dataList.size());
+			System.out.println("timeList len:"+timeList.size());
 			
 			htmResult.append("</tbody>");
 			htmResult.append("</table>");
 			htmResult.append("</div>");
 			
 			AnalysSignal analysSignal = new AnalysSignal(dataList, textData.toString());
+			analysSignal.setTimeList(timeList);
 			
 			int startParam = profitStopUI.getStartParam();
 			int sumParam =profitStopUI.getSumRegion().getFirstNum();
