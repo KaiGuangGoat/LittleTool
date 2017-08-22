@@ -20,11 +20,6 @@ public enum ProfitByYearMonthHolder {
 		return profitByYearMonths;
 	}
 	
-	public Integer[] getMonthsProfit(int year){
-		init();
-		return profitByYearMonths.get(year);
-	}
-	
 	public void setMounthsProfit(int year,int mounth,int profit){
 		init();
 		Integer[] mounthsProfit = profitByYearMonths.get(year);
@@ -86,15 +81,18 @@ public enum ProfitByYearMonthHolder {
 	}
 	
 	public void print(){
+		int profitSum = 0;
 		System.out.println(profitByYearMonths.size());
 		for(Entry<Integer, Integer[]> entry:profitByYearMonths.entrySet()){
 			System.out.println();
 			System.out.print(entry.getKey()+":");
 			for(Integer profit:entry.getValue()){
+				profitSum += profit==null?0:profit;
 				System.out.print(profit+" ");
 			}
-			System.out.println();
+			System.out.println("sum : " + profitSum);
 		}
+		reset();
 	}
 
 }

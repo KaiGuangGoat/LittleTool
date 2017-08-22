@@ -400,7 +400,6 @@ public class AnalysSignal {
 					break;
 				}
 				int data = dataList.get(position);
-				timeList.get(position);
 				sum = sum + data;
 				beforeSum = beforeSum + data;
 				conditionSum = conditionSum + data;
@@ -447,7 +446,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								stop.stopType);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 				}
@@ -485,7 +484,7 @@ public class AnalysSignal {
 							setResultProfitStop(i+1,positiveNum, negativeNum, profit,
 									maxTemp,maxPositionTemp,minTemp,minPositionTemp,
 									stop.stopType);
-							profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+							profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 							break;
 					}
 				}
@@ -509,7 +508,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								stop.stopType);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 				}
@@ -534,7 +533,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1, positiveNum, negativeNum, profit,
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_SINGLE_STOP);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 					if(/*(goal>0&&sum>=goal)||(goal<0&&sum<=goal)*/sum==goal){
@@ -555,7 +554,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_NO_STOP);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 					
@@ -577,7 +576,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit, 
 								max,maxPosition,min,minPosition,
 								Type.ALL_STOP_FIXED_STOP);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 					
@@ -613,7 +612,7 @@ public class AnalysSignal {
 						setResultProfitStop(i+1,positiveNum, negativeNum, profit,
 								maxTemp,maxPositionTemp,minTemp,minPositionTemp,
 								Type.ALL_STOP_NUMERICAL_STOP);
-						profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+						profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 						break;
 					}
 					
@@ -655,15 +654,14 @@ public class AnalysSignal {
 					setResultProfitStop(i+1, positiveNum, negativeNum, profit, 
 							conditionMax, conditionMaxPosition, conditionMin, 
 							conditionMinPosition, Type.NO_STOP);
-					profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, true);
+					profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, true);
 					break;
 				}
-				profitByDate.analyse(DateUtil.transFormDate(timeList.get(i)), data, false);
+				profitByDate.analyse(DateUtil.transFormDate(timeList.get(position)), data, false);
 				i++;
 				index++;
 			}
 		}
-		ProfitByYearMonthHolder.INSTANCE.print();
 		//总的统计
 		ResultProfitStop mResultProfitStop = new ResultProfitStop();
 		mResultProfitStop.setTotalCount(totalColl_totalCount);

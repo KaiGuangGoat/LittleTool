@@ -127,6 +127,7 @@ public class FileInputOutput {
 		OutByExcel excel = new OutByExcel();
 		excel.out(resultProStopList, outName+".xls");
 		excel.outUnEntrance(unEntranceList, outName+"_未入场和未达到止损的.xls");
+		excel.outProfitByYearMonth(outName+"_月份统计盈亏.xls");
 	}
 
 	private static boolean fileOutput(String filePath,String content) {
