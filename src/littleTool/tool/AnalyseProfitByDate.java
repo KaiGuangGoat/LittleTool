@@ -3,6 +3,7 @@ package littleTool.tool;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import littleTool.bean.ResultProfitByYearMonth;
 import littleTool.utils.DateUtil;
@@ -22,7 +23,7 @@ public class AnalyseProfitByDate {
 	public AnalyseProfitByDate(int positiveProfit,int negativeProfit){
 		this.positiveProfit = positiveProfit;
 		this.negativeProfit = negativeProfit;
-		profitByYearMonths = new HashMap<Integer, Integer[]>();
+		profitByYearMonths = new TreeMap<Integer, Integer[]>();
 	}
 	
 	public void analyse(Date currentDate,int data,boolean end){
@@ -34,12 +35,6 @@ public class AnalyseProfitByDate {
 		}
 		
 		if(end){
-			System.out.println("AnalyseProfitByDate negativeNum:"+negativeNum 
-					+ " positiveNum:"+positiveNum 
-					+ " negativeProfit:"+negativeProfit
-					+ " positiveProfit:"+positiveProfit
-					+ " currentMonthCount:"+dataCountsByMonth + "\n");
-			System.out.println(profitByYearMonths.size());
 			merge(currentDate);
 			ProfitByYearMonthHolder.INSTANCE.mergeProfitByYearMonths(profitByYearMonths);
 			reset();
@@ -83,7 +78,7 @@ public class AnalyseProfitByDate {
 	}
 	
 	private void reset(){
-		profitByYearMonths = new HashMap<Integer, Integer[]>();
+		profitByYearMonths = new TreeMap<Integer, Integer[]>();
 		resetDataCountByMonth();
 	}
 	

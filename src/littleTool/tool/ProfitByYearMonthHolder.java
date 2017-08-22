@@ -1,9 +1,8 @@
 package littleTool.tool;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.TreeMap;
 
 public enum ProfitByYearMonthHolder {
 	INSTANCE;
@@ -11,7 +10,7 @@ public enum ProfitByYearMonthHolder {
 	
 	public void init(){
 		if(profitByYearMonths == null){
-			profitByYearMonths = new HashMap<Integer, Integer[]>();
+			profitByYearMonths = new TreeMap<Integer, Integer[]>();
 		}
 	}
 
@@ -48,8 +47,13 @@ public enum ProfitByYearMonthHolder {
 				continue;
 			}
 			for(int i=0;i<valueMerge.length;i++){
-				value[i] = (value[i]==null?0:value[i]) +
-						(valueMerge[i]==null?0:valueMerge[i]);
+				if(value[i]!=null&&valueMerge[i]!=null){
+					value[i] = value[i] + valueMerge[i];
+				}else if(value[i]==null&&valueMerge[i]!=null){
+					value[i] = valueMerge[i];
+				}
+//				value[i] = (value[i]==null?0:value[i]) +
+//						(valueMerge[i]==null?0:valueMerge[i]);
 			}
 			profitByYearMonths.put(key, value);
 		}	
@@ -57,7 +61,7 @@ public enum ProfitByYearMonthHolder {
 	}
 	
 	private void setProfitByYearMonths(Map<Integer,Integer[]> profitByYearMonths){
-		this.profitByYearMonths = new HashMap<Integer, Integer[]>();
+		this.profitByYearMonths = new TreeMap<Integer, Integer[]>();
 		for(Entry<Integer, Integer[]> entry:profitByYearMonths.entrySet()){
 			Integer key = entry.getKey(); 
 			Integer[] value = entry.getValue();
@@ -77,7 +81,7 @@ public enum ProfitByYearMonthHolder {
 	}
 	
 	public void reset(){
-		profitByYearMonths = new HashMap<Integer, Integer[]>();
+		profitByYearMonths = new TreeMap<Integer, Integer[]>();
 	}
 	
 	public void print(){

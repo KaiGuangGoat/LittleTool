@@ -120,14 +120,41 @@ public class OutByExcel {
 			HSSFCell cell = row.createCell(i);
 			cell.setCellValue(COLUMN_NAMES_PROFIT_MONTH[i]);
 		}
+		Integer[] sumOfColumns = new Integer[12];
 		for(Entry<Integer, Integer[]> entry:data.entrySet()){
 			HSSFRow rowData = sheet.createRow(++rowIndex);
 			int columnIndex = 0;
 			int year = entry.getKey();
 			rowData.createCell(columnIndex++).setCellValue(year+"Äê");
 			for(Integer profit:entry.getValue()){
-				rowData.createCell(columnIndex++).setCellValue(profit==null?0:profit);
+				if(profit != null){
+					rowData.createCell(columnIndex).setCellValue(profit);
+					if(sumOfColumns[columnIndex-1]==null){
+						sumOfColumns[columnIndex-1] = 0;
+					}
+					sumOfColumns[columnIndex-1] += profit;
+				}
+				
+				columnIndex++;
 			}
+		}
+		int columnIndex = 0;
+		HSSFRow rowData = sheet.createRow(++rowIndex);
+		rowData.createCell(columnIndex++).setCellValue("»ã×Ü");
+		for(Integer sumOfColumn:sumOfColumns){
+			rowData.createCell(columnIndex++).setCellValue(sumOfColumn==null?0:sumOfColumn);
+		}
+		write(outName,workBook);
+	}
+	
+	public void  outBaseData(List<String>timeList,List<Integer>dataList,String outName){
+		HSSFWorkbook workBook = new HSSFWorkbook();
+		HSSFSheet sheet = workBook.createSheet();
+		for(int i=0;i<dataList.size();i++){
+			HSSFRow row = sheet.createRow(i);
+			int columnIndex = 0;
+			row.createCell(columnIndex++).setCellValue(timeList.get(i));
+			row.createCell(columnIndex++).setCellValue(dataList.get(i));
 		}
 		write(outName,workBook);
 	}

@@ -15,7 +15,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -49,15 +48,13 @@ public class FileInputOutput {
 	private StringBuilder textResult;
 	private StringBuilder htmResult;
 	
-//	private int beginIndex;
-//	private int analyLen ;
-//	private int beginPercent ;
-//	private int endPercent ;
 	private JTextArea outMsg;
 	private ProfitStopUI profitStopUI;
 	
 	private List<ResultProfitStop> resultProStopList;
 	private List<SignalPositionUnEntrance> unEntranceList;
+	private List<String> timeList;
+	private List<Integer> dataList;
 	
 	private JTable table;
 	
@@ -118,9 +115,9 @@ public class FileInputOutput {
 		currentTime = date.toLocaleString().replace(":", "_");
 		outByExcel(outputPath+File.separatorChar+outFileName+currentTime);
 		
-		boolean txtResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".txt",textResult.toString());
-		boolean htmResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".htm", htmResult.toString());
-		return txtResultBool|htmResultBool;
+//		boolean txtResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".txt",textResult.toString());
+//		boolean htmResultBool = fileOutput(outputPath+File.separatorChar+outFileName+currentTime+".htm", htmResult.toString());
+		return true;//|htmResultBool;
 	}
 	
 	private void outByExcel(String outName){
@@ -128,6 +125,7 @@ public class FileInputOutput {
 		excel.out(resultProStopList, outName+".xls");
 		excel.outUnEntrance(unEntranceList, outName+"_未入场和未达到止损的.xls");
 		excel.outProfitByYearMonth(outName+"_月份统计盈亏.xls");
+		excel.outBaseData(timeList, dataList, outName+"_基础数据.xls");
 	}
 
 	private static boolean fileOutput(String filePath,String content) {
@@ -406,14 +404,13 @@ public class FileInputOutput {
 					}
 				} catch (Exception e) {
 					failMsg = ExceptionUtil.getExceptionMsg(e);
-					System.out.println(time);
 					timeList.add(time);
 				}
 			}
 //			Element valueElement = trs.get(2).child(8);
 //			System.out.println(valueElement.text());
-			System.out.println("dataList len:"+dataList.size());
-			System.out.println("timeList len:"+timeList.size());
+			this.dataList = dataList;
+			this.timeList = timeList;
 			
 			htmResult.append("</tbody>");
 			htmResult.append("</table>");
@@ -443,7 +440,6 @@ public class FileInputOutput {
 			unEntranceList = analysSignal.getUnEntrancdList();
 			table.setModel(new DataTableModel(resultProStopList));
 			win.repaint();
-//			fileOutput("H:\\项目\\国栋师兄\\test.htm", htmResult.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 			failMsg = ExceptionUtil.getExceptionMsg(e);
