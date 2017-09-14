@@ -53,7 +53,8 @@ public class FileInputOutput {
 	
 	private List<ResultProfitStop> resultProStopList;
 	private List<SignalPositionUnEntrance> unEntranceList;
-	private List<String> timeList;
+	private List<String> timeStartList;
+	private List<String> timeEndList;
 	private List<Integer> dataList;
 	
 	private JTable table;
@@ -125,7 +126,8 @@ public class FileInputOutput {
 		excel.out(resultProStopList, outName+".xls");
 		excel.outUnEntrance(unEntranceList, outName+"_未入场和未达到止损的.xls");
 		excel.outProfitByYearMonth(outName+"_月份统计盈亏.xls");
-		excel.outBaseData(timeList, dataList, outName+"_基础数据.xls");
+		excel.outBaseData(timeStartList, dataList, outName+"_入场时间基础数据.xls");
+		excel.outBaseData(timeEndList, dataList, outName+"_出场时间基础数据.xls");
 	}
 
 	private static boolean fileOutput(String filePath,String content) {
@@ -367,6 +369,7 @@ public class FileInputOutput {
 			int wrongCount = 0;
 			List<Integer> dataList = new ArrayList<Integer>();
 			List<String> timeList = new ArrayList<String>();
+			List<String> timeEndList = new ArrayList<String>();
 			
 			for(Element tr:trs){
 				if(i==0){
@@ -402,6 +405,7 @@ public class FileInputOutput {
 						htmResult.append("<td>").append("0").append("</td>");
 						htmResult.append("</tr>");
 					}
+					timeEndList.add(time);
 				} catch (Exception e) {
 					failMsg = ExceptionUtil.getExceptionMsg(e);
 					timeList.add(time);
@@ -410,7 +414,8 @@ public class FileInputOutput {
 //			Element valueElement = trs.get(2).child(8);
 //			System.out.println(valueElement.text());
 			this.dataList = dataList;
-			this.timeList = timeList;
+			this.timeStartList = timeList;
+			this.timeEndList = timeEndList;
 			
 			htmResult.append("</tbody>");
 			htmResult.append("</table>");

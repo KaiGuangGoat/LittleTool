@@ -3,6 +3,7 @@ package littleTool.out;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +12,7 @@ import littleTool.bean.ResultProfitStop;
 import littleTool.bean.SignalPositionUnEntrance;
 import littleTool.bean.SignalStop.Type;
 import littleTool.tool.ProfitByYearMonthHolder;
+import littleTool.utils.DateUtil;
 import littleTool.utils.ExceptionUtil;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -150,11 +152,40 @@ public class OutByExcel {
 	public void  outBaseData(List<String>timeList,List<Integer>dataList,String outName){
 		HSSFWorkbook workBook = new HSSFWorkbook();
 		HSSFSheet sheet = workBook.createSheet();
+		Date currentDate = null;
+		Date lastDate = null;
+		int sameDateSum = 0;
+		HSSFRow lastRow = null;
 		for(int i=0;i<dataList.size();i++){
+			String currentTimeStr = timeList.get(i);
+			Integer data = dataList.get(i);
+			
+			currentDate = DateUtil.transFormDate(currentTimeStr);
+			if(lastDate!=null){
+				if(DateUtil.isSameDay(currentDate, lastDate)){
+					
+					sameDateSum += data;
+					
+				}else{
+					lastRow.createCell(3).setCellValue(sameDateSum);
+					sameDateSum = data;
+				}
+			}else{
+				//first;
+				sameDateSum +=data;
+			}
+			
+			lastDate = currentDate;
+			
 			HSSFRow row = sheet.createRow(i);
 			int columnIndex = 0;
-			row.createCell(columnIndex++).setCellValue(timeList.get(i));
-			row.createCell(columnIndex++).setCellValue(dataList.get(i));
+			row.createCell(columnIndex++).setCellValue(currentTimeStr);
+			row.createCell(columnIndex++).setCellValue(data);
+			if(i==dataList.size() - 1){
+				row.createCell(3).setCellValue(sameDateSum);
+				break;
+			}
+			lastRow = row;
 		}
 		write(outName,workBook);
 	}

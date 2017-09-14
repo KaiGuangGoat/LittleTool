@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DateUtil {
 	public static void main(String[] args) throws ParseException {
-		String time = "2010.2.28 07:30";
+		String time = "2017.9.14 07:30";
 		SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 		
 		Date date = dataFormat.parse(time);
@@ -17,6 +17,8 @@ public class DateUtil {
 		sb.append(getYear(date)).append("-").append(getMonth(date)).append("-").append(date.getDate());
 		System.out.println(sb.toString());
 		System.out.println(isMonthLastDay(date));
+		Date second = new Date();
+		System.out.println(isSameDay(date, second));
 	}
 	
 	public static Date transFormDate(String source) {
@@ -38,7 +40,18 @@ public class DateUtil {
 	}
 	
 	public static boolean isSameMonth(Date firstDate,Date secondDate){
+		if(!isSameYear(firstDate, secondDate)){
+			return false;
+		}
 		return firstDate.getMonth() == secondDate.getMonth();
+	}
+	
+	public static boolean isSameDay(Date firstDate,Date secondDate){
+		
+		if(!isSameMonth(firstDate, secondDate)){
+			return false;
+		}
+		return firstDate.getDate() == secondDate.getDate();
 	}
 	
 	public static int getYear(Date date){
